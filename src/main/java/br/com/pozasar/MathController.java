@@ -6,9 +6,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.pozasar.exception.UnsuportedMathOperationException;
+import br.com.pozasar.math.SimpleMath;
+import br.com.pozasar.request.converters.NumberConverter;
 
 @RestController
 public class MathController {
+	
+	private SimpleMath math = new SimpleMath();
 
 //	CÓDIGOS COMENTADOS REFEREM A PRIMEIRA VERSÃO DO PROJETO
 //	private static final String template = "Hello, %s!";
@@ -20,23 +24,38 @@ public class MathController {
 //	}
 	public Double sum(@PathVariable("numberOne") String numberOne, @PathVariable("numberTwo") String numberTwo)
 			throws Exception {
-		if (!isNumeric(numberOne) || !isNumeric(numberTwo)) {
+		if (!NumberConverter.isNumeric(numberOne) || !NumberConverter.isNumeric(numberTwo)) {
 			throw new UnsuportedMathOperationException("Please set a numeric value");
 		}
-		Double sum = convertToDouble(numberOne) + convertToDouble(numberTwo);
-		return sum;
+		return math.sum(NumberConverter.convertToDouble(numberOne), NumberConverter.convertToDouble(numberTwo));
+	}
+	
+	@RequestMapping(value = "/sub/{numberOne}/{numberTwo}", method = RequestMethod.GET)
+	public Double sub(@PathVariable("numberOne") String numberOne, @PathVariable("numberTwo") String numberTwo)
+			throws Exception {
+		if (!NumberConverter.isNumeric(numberOne) || !NumberConverter.isNumeric(numberTwo)) {
+			throw new UnsuportedMathOperationException("Please set a numeric value");
+		}
+		return math.sub(NumberConverter.convertToDouble(numberOne), NumberConverter.convertToDouble(numberTwo));
+	}
+	
+	@RequestMapping(value = "/div/{numberOne}/{numberTwo}", method = RequestMethod.GET)
+	public Double div(@PathVariable("numberOne") String numberOne, @PathVariable("numberTwo") String numberTwo)
+			throws Exception {
+		if (!NumberConverter.isNumeric(numberOne) || !NumberConverter.isNumeric(numberTwo)) {
+			throw new UnsuportedMathOperationException("Please set a numeric value");
+		}
+		return math.div(NumberConverter.convertToDouble(numberOne), NumberConverter.convertToDouble(numberTwo));
+	}
+	
+	@RequestMapping(value = "/multip/{numberOne}/{numberTwo}", method = RequestMethod.GET)
+	public Double multip(@PathVariable("numberOne") String numberOne, @PathVariable("numberTwo") String numberTwo)
+			throws Exception {
+		if (!NumberConverter.isNumeric(numberOne) || !NumberConverter.isNumeric(numberTwo)) {
+			throw new UnsuportedMathOperationException("Please set a numeric value");
+		}
+		return math.multip(NumberConverter.convertToDouble(numberOne), NumberConverter.convertToDouble(numberTwo));
 	}
 
-	private Double convertToDouble(String strNumber) {
-		if(strNumber == null) return 0D;
-		String number = strNumber.replaceAll(",", ".");
-		if (isNumeric(number)) return Double.parseDouble(number);
-		return 0D;
-	}
-
-	private boolean isNumeric(String strNumber) {
-		if(strNumber == null) return false;
-		String number = strNumber.replaceAll(",", ".");
-		return number.matches("[-+]?[0-9]*\\.?[0-9]+");
-	}
+	
 }
